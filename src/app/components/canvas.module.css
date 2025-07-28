@@ -1,0 +1,103 @@
+.canvasContainer {
+    width: 100%;
+    height: 80%;
+    background-color: #202020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    overflow-x: auto;
+    flex-wrap: wrap;
+}
+
+.canvas {
+    width: 1152px;
+    height: 648px;
+    background-color: white;
+    position: relative;
+    cursor: crosshair;
+}
+
+.edgeBox {
+    position: absolute;
+    width: 0.4vw;
+    height: 0.6vh;
+    flex-grow: 0;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border: .01em solid #535353;
+    box-sizing: border-box;
+}
+
+.edgeBox::before {
+    content: '';
+    position: absolute;
+    width: 2.2vw;
+    height: 3.3vh;
+}
+
+.topLeft {
+    top: -.6vh;
+    left: -.4vw;
+    cursor: nw-resize;
+}
+
+.topLeft::before {
+    bottom: -0%;
+    right: -0%;
+}
+
+.topRight {
+    top: -.6vh;
+    right: -.4vw;
+    cursor: ne-resize;
+}
+
+.topRight::before {
+    bottom: -0%;
+    left: -0%;
+}
+
+.centerLeft {
+    top: 50%;
+    left: -.4vw;
+    cursor: e-resize;
+}
+
+.centerLeft::before {
+    top: -350%;
+    right: -0%;
+}
+
+.centerRight {
+    top: 50%;
+    right: -.4vw;
+    cursor: w-resize;
+}
+
+.centerRight::before {
+    top: -350%;
+    left: -0%;
+}
+
+.bottomLeft {
+    bottom: -.6vh;
+    left: -.4vw;
+    cursor: sw-resize;
+}
+
+.bottomLeft::before {
+    top: -0%;
+    right: -0%;
+}
+
+.bottomRight {
+    bottom: -.6vh;
+    right: -.4vw;
+    cursor: se-resize;
+}
+
+.bottomRight::before {
+    top: -0%;
+    left: -0%;
+}
