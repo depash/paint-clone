@@ -10,13 +10,15 @@
     flex-wrap: wrap;
 }
 
-.canvas {
-    width: 1152px;
-    height: 648px;
+.canvasWrapper {
     background-color: white;
     position: relative;
     cursor: crosshair;
+    top: 20px;
+    left: 20px;
 }
+
+.canvas {}
 
 .edgeBox {
     position: absolute;
@@ -59,6 +61,7 @@
 }
 
 .centerLeft {
+    height: 0.7vh;
     top: 50%;
     left: -.4vw;
     cursor: e-resize;
@@ -70,6 +73,7 @@
 }
 
 .centerRight {
+    height: 0.7vh;
     top: 50%;
     right: -.4vw;
     cursor: w-resize;
@@ -81,6 +85,7 @@
 }
 
 .bottomLeft {
+    height: 0.7vh;
     bottom: -.6vh;
     left: -.4vw;
     cursor: sw-resize;
@@ -92,6 +97,7 @@
 }
 
 .bottomRight {
+    height: 0.7vh;
     bottom: -.6vh;
     right: -.4vw;
     cursor: se-resize;
