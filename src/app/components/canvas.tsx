@@ -11,16 +11,16 @@ type canvasProps = {
 }
 
 export default function canvas({ width, height, color, brushSize }: canvasProps) {
-    const [undoStack, setUndoStack] = useState<Array<string | null>>([])
-    const [redoStack, setRedoStack] = useState<Array<string | null>>([])
+    const [undoStack, setUndoStack] = useState<Array<HTMLImageElement | null>>([])
+    const [redoStack, setRedoStack] = useState<Array<HTMLImageElement | null>>([])
     const x = useRef<number>(0)
     const y = useRef<number>(0)
     const drawing = useRef<boolean>(false)
 
-    const onMouseDown = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const onMouseDown = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
-        const ctx = canvas.getContext("2d")!!;
+        const ctx = canvas.getContext("2d")!;
 
         const bounding = canvas.getBoundingClientRect();
 
@@ -32,21 +32,18 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
                 if (blob) {
                     const newImg = document.createElement("img");
                     const url = URL.createObjectURL(blob);
-                    console.log(url)
                     newImg.src = url;
-                    document.body.appendChild(newImg);
-                    setUndoStack((prev) => [...prev, url])
+                    setUndoStack((prev) => [...prev, newImg])
                 }
             });
         }
-
         drawing.current = true
     }
 
-    const onMouseMove = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const onMouseMove = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
-        const ctx = canvas.getContext("2d")!!;
+        const ctx = canvas.getContext("2d")!;
 
         const bounding = canvas.getBoundingClientRect();
 
@@ -71,54 +68,88 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         context.stroke();
     }
 
-    const onMouseUp = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const onMouseUp = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
-        const ctx = canvas.getContext("2d")!!;
+        const ctx = canvas.getContext("2d")!;
 
         drawing.current = false
         ctx.save();
-        if (!undoStack.length) {
-            canvas.toBlob((blob) => {
-                if (blob) {
-                    const newImg = document.createElement("img");
-                    const url = URL.createObjectURL(blob);
-
-                    newImg.src = url;
-                    document.body.appendChild(newImg);
-                    setUndoStack((prev) => [...prev, url])
-                }
-            });
-        }
+        canvas.toBlob((blob) => {
+            if (blob) {
+                const newImg = document.createElement("img");
+                const url = URL.createObjectURL(blob);
+                newImg.src = url;
+                setUndoStack((prev) => [...prev, newImg]);
+                setRedoStack([]);
+            }
+        });
     }
 
-    const onMouseLeave = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const onMouseLeave = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
         const ctx = canvas.getContext("2d");
     }
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-                event.preventDefault();
-                const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-                const ctx = canvas.getContext("2d")!!;
-                // undoStack.current.pop()
-                console.log(undoStack)
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (!e.ctrlKey || (!undoStack.length && !redoStack.length)) return;
+
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        const ctx = canvas.getContext("2d")!;
+
+        if (e.key === 'z') {
+            e.preventDefault();
+
+            const newUndo = [...undoStack];
+            const last = newUndo.pop()!;
+
+            const newRedo = [...redoStack, last];
+
+            const lastChange = newUndo.at(-1) ?? null;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (lastChange) {
+                ctx.drawImage(lastChange, 0, 0, canvas.width, canvas.height);
+                URL.revokeObjectURL(lastChange.src);
             }
-        };
 
-        window.addEventListener('keydown', handleKeyDown);
+            setUndoStack(newUndo);
+            setRedoStack(newRedo);
+        }
+        if (e.key === 'Z') {
+            e.preventDefault();
 
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
+            const newRedo = [...redoStack];
+            const last = newRedo.pop()!;
+
+            const newUndo = [...undoStack, last];
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(last, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(last.src);
+
+            setRedoStack(newRedo);
+            setUndoStack(newUndo);
+        }
+    };
+
+
     return (
         <div className={styles.canvasContainer}>
             <div className={styles.canvasWrapper} style={{ width: width, height: height }}>
-                <canvas className={styles.canvas} id={'canvas'} width={width} height={height} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseLeave} onMouseDown={onMouseDown}></canvas>
+                <canvas
+                    className={styles.canvas}
+                    id={'canvas'}
+                    tabIndex={0}
+                    width={width}
+                    height={height}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={onMouseUp}
+                    onMouseLeave={onMouseLeave}
+                    onMouseDown={onMouseDown}
+                    onKeyDown={handleKeyDown}
+                />
                 <div className={`${styles.edgeBox} ${styles.topLeft}`}></div>
                 <div className={`${styles.edgeBox} ${styles.topRight}`}></div>
                 <div className={`${styles.edgeBox} ${styles.centerLeft}`}></div>
