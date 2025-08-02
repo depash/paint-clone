@@ -20,8 +20,6 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
     const onMouseDown = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
-        const ctx = canvas.getContext("2d")!;
-
         const bounding = canvas.getBoundingClientRect();
 
         x.current = e.clientX - bounding.left
@@ -86,10 +84,15 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         });
     }
 
-    const onMouseLeave = (e: React.MouseEvent) => {
+    const onMouseEnter = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
 
-        const ctx = canvas.getContext("2d");
+        const bounding = canvas.getBoundingClientRect();
+
+        if (drawing.current) {
+            x.current = e.clientX - bounding.left
+            y.current = e.clientY - bounding.top
+        }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -134,7 +137,6 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         }
     };
 
-
     return (
         <div className={styles.canvasContainer}>
             <div className={styles.canvasWrapper} style={{ width: width, height: height }}>
@@ -146,7 +148,7 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
                     height={height}
                     onMouseMove={onMouseMove}
                     onMouseUp={onMouseUp}
-                    onMouseLeave={onMouseLeave}
+                    onMouseEnter={onMouseEnter}
                     onMouseDown={onMouseDown}
                     onKeyDown={handleKeyDown}
                 />
