@@ -6,16 +6,17 @@ import { useState, useRef, useEffect } from 'react'
 type canvasProps = {
     width: number,
     height: number,
-    color: string,
+    brushColor: string,
     brushSize: number
 }
 
-export default function canvas({ width, height, color, brushSize }: canvasProps) {
+export default function Canvas({ width, height, brushColor, brushSize }: canvasProps) {
     const [undoStack, setUndoStack] = useState<Array<HTMLImageElement | null>>([])
     const [redoStack, setRedoStack] = useState<Array<HTMLImageElement | null>>([])
     const x = useRef<number>(0)
     const y = useRef<number>(0)
     const drawing = useRef<boolean>(false)
+    const isResizing = useRef<boolean>(false)
 
     const onMouseDown = (e: React.MouseEvent) => {
         const canvas = e.target as HTMLCanvasElement;
@@ -25,16 +26,16 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         x.current = e.clientX - bounding.left
         y.current = e.clientY - bounding.top
 
-        if (!undoStack.length) {
-            canvas.toBlob((blob) => {
-                if (blob) {
-                    const newImg = document.createElement("img");
-                    const url = URL.createObjectURL(blob);
-                    newImg.src = url;
-                    setUndoStack((prev) => [...prev, newImg])
-                }
-            });
-        }
+        // if (!undoStack.length) {
+        //     canvas.toBlob((blob) => {
+        //         if (blob) {
+        //             const newImg = document.createElement("img");
+        //             const url = URL.createObjectURL(blob);
+        //             newImg.src = url;
+        //             setUndoStack((prev) => [...prev, newImg])
+        //         }
+        //     });
+        // }
         drawing.current = true
     }
 
@@ -57,7 +58,7 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
 
     function drawLine(context: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) {
         context.beginPath();
-        context.strokeStyle = color;
+        context.strokeStyle = brushColor;
         context.lineWidth = brushSize;
         context.lineJoin = "round";
         context.moveTo(x1, y1);
@@ -95,13 +96,12 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         }
     }
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const onKeyDown = (e: React.KeyboardEvent) => {
         if (!e.ctrlKey || (!undoStack.length && !redoStack.length)) return;
-
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         const ctx = canvas.getContext("2d")!;
 
-        if (e.key === 'z') {
+        if (e.key === 'z' && undoStack.length) {
             e.preventDefault();
 
             const newUndo = [...undoStack];
@@ -120,7 +120,7 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
             setUndoStack(newUndo);
             setRedoStack(newRedo);
         }
-        if (e.key === 'Z') {
+        if (e.key === 'Z' && redoStack.length) {
             e.preventDefault();
 
             const newRedo = [...redoStack];
@@ -137,6 +137,18 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
         }
     };
 
+    const handleResizeDown = (e: React.MouseEvent) => {
+        isResizing.current = true
+    }
+
+    const handleResizeMove = (e: React.MouseEvent) => {
+        const div = e.target as HTMLDivElement;
+    }
+
+    const handleResizeUp = (e: React.MouseEvent) => {
+        isResizing.current = true
+    }
+
     return (
         <div className={styles.canvasContainer}>
             <div className={styles.canvasWrapper} style={{ width: width, height: height }}>
@@ -150,14 +162,50 @@ export default function canvas({ width, height, color, brushSize }: canvasProps)
                     onMouseUp={onMouseUp}
                     onMouseEnter={onMouseEnter}
                     onMouseDown={onMouseDown}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={onKeyDown}
                 />
-                <div className={`${styles.edgeBox} ${styles.topLeft}`}></div>
-                <div className={`${styles.edgeBox} ${styles.topRight}`}></div>
-                <div className={`${styles.edgeBox} ${styles.centerLeft}`}></div>
-                <div className={`${styles.edgeBox} ${styles.centerRight}`}></div>
-                <div className={`${styles.edgeBox} ${styles.bottomLeft}`}></div>
-                <div className={`${styles.edgeBox} ${styles.bottomRight}`}></div>
+                <div
+                    className={`${styles.edgeBox} ${styles.topLeft}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
+                <div
+                    className={`${styles.edgeBox} ${styles.topRight}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
+                <div
+                    className={`${styles.edgeBox} ${styles.centerLeft}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
+                <div
+                    className={`${styles.edgeBox} ${styles.centerRight}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
+                <div
+                    className={`${styles.edgeBox} ${styles.bottomLeft}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
+                <div
+                    className={`${styles.edgeBox} ${styles.bottomRight}`}
+                    onMouseDown={handleResizeDown}
+                    onMouseMove={handleResizeMove}
+                    onMouseUp={handleResizeUp}
+                >
+                </div>
             </div>
         </div>
     );

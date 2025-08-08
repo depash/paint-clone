@@ -9,16 +9,43 @@ import { useState } from 'react'
 export default function Home() {
   const [width, setWidth] = useState(1152);
   const [height, setHeight] = useState(648);
-  const [color, setColor] = useState('#000000')
+  const [brushColor, setBrushColor] = useState('#000000')
   const [brushSize, setBrushSize] = useState(10);
+  const [colorOptions, setColorOptions] = useState(
+    ['black',
+      'grey',
+      'darkred',
+      'red',
+      'orange',
+      'yellow',
+      'green',
+      'turquoise',
+      'indigo',
+      'purple',
+      'white',
+      'lightgray',
+      'brown',
+      'rose',
+      'gold',
+      'lightyellow',
+      'lime',
+      'lightturquoise',
+      'cadetblue',
+      'lavender',]
+  );
+  const [additionalColors, setAdditionalColors] = useState([])
 
   return (
     <div className={styles.page}>
-      <MenuBar />
+      <MenuBar
+        colorOptions={colorOptions}
+        additionalColors={additionalColors}
+        setBrushColor={setBrushColor}
+      />
       <Canvas
         width={width}
         height={height}
-        color={color}
+        brushColor={brushColor}
         brushSize={brushSize}
       />
       <StatusBar />

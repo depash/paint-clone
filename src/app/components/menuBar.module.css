@@ -3,3 +3,41 @@
     height: 15%;
     background-color: #272727;
 }
+
+.menuBarWrapper {
+    list-style-type: none;
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.menuItemWrapper {
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+}
+
+.menuItemWrapper:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 5px;
+    bottom: 5px;
+    width: 1px;
+    background-color: #393939;
+}
+
+.menuItem {
+    /* height: 90%; */
+    width: 100%;
+}
+
+.menuLabel {
+    height: 10%;
+    width: 100%;
+    font-size: 13;
+    padding-right: 10px;
+    padding-left: 10px;
+}
