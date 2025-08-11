@@ -17,6 +17,8 @@
     display: flex;
     align-items: flex-end;
     position: relative;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .menuItemWrapper:not(:last-child)::after {
@@ -40,4 +42,22 @@
     font-size: 13;
     padding-right: 10px;
     padding-left: 10px;
+}
+
+.menuColors {
+    display: flex;
+}
+
+.allColorOptions {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 10px;
+    width: 200px;
+}
+
+.colorCircle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: .5px solid #6a6a6a;
 }

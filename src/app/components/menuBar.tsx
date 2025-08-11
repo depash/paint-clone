@@ -8,10 +8,11 @@ import ImageMenu from './menuComponents/imageMenu';
 type menuBarProps = {
     colorOptions: Array<String>,
     additionalColors: Array<String>,
+    brushColor: String,
     setBrushColor: React.Dispatch<React.SetStateAction<string>>,
 }
 
-export default function MenuBar({ colorOptions, additionalColors, setBrushColor }: menuBarProps) {
+export default function MenuBar({ colorOptions, additionalColors, brushColor, setBrushColor }: menuBarProps) {
     return (
         <nav className={styles.menuBarContainer}>
             <ul className={styles.menuBarWrapper}>
@@ -20,6 +21,7 @@ export default function MenuBar({ colorOptions, additionalColors, setBrushColor 
                 <Brushes />
                 <Shapes />
                 <Colors
+                    brushColor={brushColor}
                     colorOptions={colorOptions}
                     additionalColors={additionalColors}
                     setBrushColor={setBrushColor}
