@@ -33,7 +33,6 @@
 
 .menuItem {
     /* height: 90%; */
-    width: 100%;
 }
 
 .menuLabel {
@@ -46,13 +45,13 @@
 
 .menuColors {
     display: flex;
+    padding-left: 20px;
 }
 
 .allColorOptions {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 10px;
-    width: 200px;
+    /* gap: 1px; */
 }
 
 .colorCircle {
@@ -60,4 +59,25 @@
     height: 16px;
     border-radius: 50%;
     border: .5px solid #6a6a6a;
+    margin: 5px
 }
+
+.mainColorCircle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: .5px solid #6a6a6a;
+}
+
+.primaryColorOptions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+
+.mainColorCircleSelected {}
+
+.mainColorCircleBackground {}
+
+.colorCircleBackground {}
