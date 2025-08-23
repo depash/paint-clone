@@ -23,19 +23,18 @@ export default function Canvas({ width, height, brushColor, brushSize }: canvasP
 
         const bounding = canvas.getBoundingClientRect();
 
+        const ctx = canvas.getContext("2d")!;
+
         x.current = e.clientX - bounding.left
         y.current = e.clientY - bounding.top
 
-        // if (!undoStack.length) {
-        //     canvas.toBlob((blob) => {
-        //         if (blob) {
-        //             const newImg = document.createElement("img");
-        //             const url = URL.createObjectURL(blob);
-        //             newImg.src = url;
-        //             setUndoStack((prev) => [...prev, newImg])
-        //         }
-        //     });
-        // }
+        const dotSize = brushSize / 2;
+        ctx.fillStyle = brushColor;
+
+        ctx.beginPath();
+        ctx.arc(x.current, y.current, dotSize, 0, Math.PI * 2, true);
+        ctx.fill();
+
         drawing.current = true
     }
 
