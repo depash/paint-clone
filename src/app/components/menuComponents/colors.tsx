@@ -41,35 +41,43 @@ export default function Colors({ colorOptions, additionalColors, brushColor, set
         <li className={styles.menuItemWrapper}>
             <div className={`${styles.menuColors} ${styles.menuItem}`}>
                 <div className={styles.primaryColorOptions}>
-                    <div className={`${selectedPrimaryColorOption ? styles.mainColorCircleSelected : ""} ${styles.mainColorCircleBackground}`}>
+                    <div
+                        className={`${selectedPrimaryColorOption ? styles.mainColorCircleSelected : ''} ${styles.mainColorCircleBackground}`}
+                        onClick={() => { handlePrimaryOptionsClicked(true) }}
+                    >
                         <div
                             className={styles.mainColorCircle}
-                            onClick={() => { handlePrimaryOptionsClicked(true) }}
                             style={{ backgroundColor: `${primaryBrushColor}` }}
                         />
                     </div>
-                    <div className={`${selectedPrimaryColorOption ? styles.mainColorCircleSelected : ""} ${styles.mainColorCircleBackground}`}>
+                    <div
+                        className={`${!selectedPrimaryColorOption ? styles.mainColorCircleSelected : ''} ${styles.mainColorCircleBackground}`}
+                        onClick={() => { handlePrimaryOptionsClicked(false) }}
+                    >
                         <div
                             className={styles.mainColorCircle}
-                            onClick={() => { handlePrimaryOptionsClicked(false) }}
                             style={{ backgroundColor: `${secondaryBrushColor}` }}
                         />
                     </div>
                 </div>
                 <div className={styles.allColorOptions}>
                     {colorOptions.map((color, index) => (
-                        <div className={styles.colorCircleBackground}>
+                        <div
+                            className={styles.colorCircleBackground}
+                            onClick={() => { handleColorOptionsClicked(color) }}
+                        >
                             <div
-                                onClick={() => { handleColorOptionsClicked(color) }}
                                 className={styles.colorCircle}
                                 style={{ backgroundColor: `${color}` }}
                             />
                         </div>
                     ))}
                     {additionalColors.map((color, index) => (
-                        <div className={styles.colorCircleBackground}>
+                        <div
+                            className={color ? styles.colorCircleBackground : ''}
+                            onClick={() => { handleColorOptionsClicked(color) }}
+                        >
                             <div
-                                onClick={() => { handleColorOptionsClicked(color) }}
                                 className={styles.colorCircle}
                                 style={{ backgroundColor: `${color}` }}
                             />
